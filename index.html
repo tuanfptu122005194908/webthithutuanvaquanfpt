@@ -391,11 +391,67 @@
         /* Đảm bảo ảnh không bị cắt và hiển thị đẹp */
         width: 100%;
         display: block;
-        max-height: none;
+        /* Xóa max-height: none; */
         object-fit: contain;
         background: #f5f5f5;
         padding: 25px; /* Thêm padding để ảnh không bị dính sát */
         border-bottom: 1px solid #eee;
+
+        max-height: 60vh; /* Giữ giới hạn tương đối lớn để tránh tràn màn hình */
+      }
+
+      .review-item .question-image {
+        max-height: 250px; /* Giới hạn cho ảnh trong khung review chi tiết */
+        cursor: zoom-in; /* Thêm con trỏ báo hiệu có thể zoom */
+      }
+      /* =================================================================
+ * | MODAL FOR FULL SCREEN IMAGE
+ * =================================================================
+ */
+      .modal {
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        margin: auto;
+        display: block;
+        width: 90%;
+        max-width: 1000px;
+        max-height: 90vh;
+        object-fit: contain;
+      }
+
+      .modal-content.zoomed {
+        max-width: 100%; /* Cho phép ảnh chiếm toàn bộ chiều rộng */
+        max-height: 100vh; /* Cho phép ảnh chiếm toàn bộ chiều cao */
+      }
+
+      .close {
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: #bbb;
+        text-decoration: none;
+        cursor: pointer;
       }
 
       .answer-section {
@@ -598,6 +654,7 @@
         loadExams();
         loadHistory();
         loadStudents();
+        appendModalHtml(); // <--- THÊM DÒNG NÀY
         showHomePage();
       }
 
@@ -1958,8 +2015,10 @@
             }: ${status}</strong></div>
 						<img src="${q.image}" alt="Câu ${
               q.id
-            }" class="question-image" style="max-height: 250px; margin: 10px 0; border: 1px solid #ddd;">
-						<div class="review-info">
+            }" class="question-image" onclick="openModal('${
+              q.image
+            }')" style="margin: 10px 0; border: 1px solid #ddd;">
+            			<div class="review-info">
 							<p><strong>Đáp án của bạn:</strong> <span style="font-weight: bold; color: ${
                 statusClass.includes("correct")
                   ? "#28a745"
@@ -2030,6 +2089,40 @@
 					</div>
 				</div>
 			`;
+      }
+
+      function appendModalHtml() {
+        // Tránh tạo Modal nhiều lần
+        if (document.getElementById("imageModal")) return;
+
+        const modalHtml = `
+            <div id="imageModal" class="modal" style="display: none;" onclick="closeModal(event)">
+                <span class="close" onclick="closeModal(event)">&times;</span>
+                <img class="modal-content" id="modalImage">
+            </div>
+        `;
+        document.body.insertAdjacentHTML("beforeend", modalHtml);
+      }
+
+      function openModal(imageSrc) {
+        appendModalHtml(); // Đảm bảo Modal tồn tại
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImage");
+        modal.style.display = "flex";
+        modalImg.src = imageSrc; // Ngăn cuộn trang
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal(event) {
+        // Kiểm tra nếu click vào nút X hoặc vùng màu đen
+        if (
+          event.target.classList.contains("close") ||
+          event.target.id === "imageModal"
+        ) {
+          const modal = document.getElementById("imageModal");
+          if (modal) modal.style.display = "none";
+          document.body.style.overflow = "auto"; // Cho phép cuộn lại
+        }
       }
 
       init();
