@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hệ Thống Thi Trực Tuyến</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+
+      /* Login Page & Forms */
+      .login-container {
+        max-width: 450px;
+        margin: 50px auto;
+        padding: 40px;
+      }
+
+      .login-box {
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .login-title {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #333;
+        font-size: 1.8em;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: 600;
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1em;
+        transition: border 0.3s;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .btn {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-weight: 600;
+        transition: transform 0.2s;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        margin-top: 10px;
+      }
+
+      .btn-tertiary {
+        background: #00bcd4;
+        margin-top: 10px;
+      }
+
+      .error-message {
+        background: #fee;
+        color: #c33;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+
+      /* General Dashboard & Nav */
+      .dashboard {
+        padding: 30px;
+      }
+
+      .nav-bar {
+        background: #f8f9fa;
+        padding: 15px 30px;
+        border-bottom: 2px solid #e0e0e0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .btn-logout {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .btn-small {
+        padding: 8px 15px;
+        font-size: 0.9em;
+        margin-right: 10px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+      }
+
+      .btn-view {
+        background: #28a745;
+        color: white;
+      }
+
+      .btn-delete {
+        background: #dc3545;
+        color: white;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      /* Folder/Exam List */
+      .folder-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .folder-card {
+        width: 250px;
+        background: #e3f2fd;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: all 0.2s;
+        border-left: 5px solid #667eea;
+      }
+
+      .folder-card:hover {
+        background: #c5e3fe;
+        transform: translateY(-2px);
+      }
+
+      .exam-card {
+        background: white;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: all 0.3s;
+      }
+
+      /* New CSS for Exam Taking UI (Student) */
+      .exam-display {
+        padding: 40px;
+      }
+
+      .question-container {
+        display: grid;
+        gap: 30px; /* Tăng khoảng cách giữa các câu hỏi */
+      }
+
+      .question-item {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      .question-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px 20px;
+        font-weight: bold;
+        font-size: 1.2em;
+      }
+
+      .question-image {
+        /* Sửa lỗi cắt ảnh */
+        width: 100%;
+        display: block;
+        max-height: none; /* Bỏ giới hạn chiều cao cũ */
+        object-fit: contain; /* Đảm bảo toàn bộ ảnh hiển thị */
+        background: #f5f5f5;
+        padding: 20px; /* Thêm padding để ảnh không bị dính sát */
+      }
+
+      .answer-section {
+        padding: 20px;
+        background: #f8f9fa;
+      }
+
+      .answer-options {
+        display: grid;
+        grid-template-columns: repeat(
+          auto-fit,
+          minmax(200px, 1fr)
+        ); /* 2 cột trên desktop */
+        gap: 15px; /* Tăng khoảng cách giữa các đáp án */
+      }
+
+      .answer-option {
+        padding: 15px;
+        background: white;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px; /* Góc bo tròn đẹp hơn */
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        position: relative;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .answer-option input[type="checkbox"] {
+        /* Ẩn checkbox mặc định */
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        margin: 0;
+        z-index: 10;
+      }
+
+      .answer-option label {
+        font-weight: 600;
+        color: #333;
+        margin-left: 10px;
+        cursor: pointer;
+        position: relative;
+        z-index: 5;
+      }
+
+      .answer-option:hover {
+        border-color: #667eea;
+        background: #f0f0ff;
+      }
+
+      .answer-option.selected {
+        border-color: #667eea;
+        background: #e3f2fd;
+        box-shadow: 0 0 0 3px #667eea40; /* Hiệu ứng nổi bật khi chọn */
+      }
+
+      /* Thêm icon check tùy chỉnh */
+      .answer-option::before {
+        content: "";
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        background-color: white;
+        transition: all 0.2s;
+      }
+
+      .answer-option.selected::before {
+        content: "✔";
+        background-color: #667eea;
+        border-color: #667eea;
+        color: white;
+        text-align: center;
+        line-height: 18px;
+        font-size: 14px;
+      }
+
+      .submit-exam {
+        text-align: center;
+        margin-top: 30px;
+      }
+
+      /* Result View styles retained from previous version */
+      .history-card {
+        background: #f9f9f9;
+        border: 2px solid #00bcd4;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .review-correct {
+        border-color: #28a745;
+        background: #e6ffe6;
+      }
+      .review-incorrect {
+        border-color: #dc3545;
+        background: #ffe6e6;
+      }
+      .review-unanswered {
+        border-color: #ffc107;
+        background: #fff8e1;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      #fileInput {
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 1.8em;
+        }
+
+        .login-container,
+        .student-login {
+          padding: 20px;
+        }
+
+        .nav-bar {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .folder-card {
+          width: 100%;
+        }
+
+        .answer-options {
+          grid-template-columns: 1fr; /* 1 cột trên mobile */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script>
+      const ADMIN_EMAIL = "admin05@gmail.com";
+      const ADMIN_PASSWORD = "tuan0112";
+      const OPTIONS = ["A", "B", "C", "D"]; // Các lựa chọn đáp án
+      const STUDENT_CODE_DEFAULT = "T&Q"; // Mã thi chung cũ, giữ lại để dễ phân biệt với ID
+
+      let currentView = "home";
+      let folders = []; // Thư mục
+      let exams = []; // Đề thi
+      let history = []; // Lịch sử làm bài
+      let students = []; // Danh sách học sinh mới
+      let currentExam = null;
+      let studentAnswers = {};
+      let currentStudent = null; // Lưu trữ thông tin học sinh đang đăng nhập
+      let currentFolderId = null; // Thư mục hiện tại đang xem (Admin)
+
+      function init() {
+        loadFolders();
+        loadExams();
+        loadHistory();
+        loadStudents();
+        showHomePage();
+      }
+
+      // --- LocalStorage Functions ---
+      function loadFolders() {
+        const saved = localStorage.getItem("folders");
+        if (saved) {
+          folders = JSON.parse(saved);
+        } else {
+          folders = [{ id: "default", name: "Chưa phân loại" }];
+        }
+      }
+
+      function saveFolders() {
+        localStorage.setItem("folders", JSON.stringify(folders));
+      }
+
+      function loadExams() {
+        const saved = localStorage.getItem("exams");
+        if (saved) {
+          exams = JSON.parse(saved);
+        }
+      }
+
+      function saveExams() {
+        localStorage.setItem("exams", JSON.stringify(exams));
+      }
+
+      function loadHistory() {
+        const saved = localStorage.getItem("examHistory");
+        if (saved) {
+          history = JSON.parse(saved);
+        }
+      }
+
+      function saveHistory() {
+        localStorage.setItem("examHistory", JSON.stringify(history));
+      }
+
+      function loadStudents() {
+        const saved = localStorage.getItem("students");
+        if (saved) {
+          students = JSON.parse(saved);
+        }
+      }
+
+      function saveStudents() {
+        localStorage.setItem("students", JSON.stringify(students));
+      }
+
+      // --- General Views ---
+      function showHomePage() {
+        currentView = "home";
+        currentStudent = null;
+        currentFolderId = null;
+        const app = document.getElementById("app");
+        app.innerHTML = `
+                <div class="container">
+                    <div class="header">
+                        <h1>🎓 Hệ Thống Thi Trực Tuyến</h1>
+                        <p>Quản lý và tham gia kỳ thi trực tuyến</p>
+                    </div>
+                    <div class="login-container">
+                        <div class="login-box">
+                            <div style="text-align: center; margin-bottom: 30px;">
+                                <button class="btn" onclick="showAdminLogin()">
+                                    👨‍🏫 Đăng Nhập Giáo Viên
+                                </button>
+                                <button class="btn btn-secondary" onclick="showStudentLogin()">
+                                    👨‍🎓 Đăng Nhập Học Sinh
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      // --- Admin Login & Dashboard ---
+      function showAdminLogin() {
+        currentView = "admin-login";
+        const app = document.getElementById("app");
+        app.innerHTML = `
+                <div class="container">
+                    <div class="header">
+                        <h1>👨‍🏫 Đăng Nhập Giáo Viên</h1>
+                    </div>
+                    <div class="login-container">
+                        <div class="login-box">
+                            <h2 class="login-title">Đăng Nhập</h2>
+                            <div id="errorMsg" class="error-message hidden"></div>
+                            <form onsubmit="handleAdminLogin(event)">
+                                <div class="form-group">
+                                    <label>Email:</label>
+                                    <input type="email" id="adminEmail" required placeholder="admin05@gmail.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Mật khẩu:</label>
+                                    <input type="password" id="adminPassword" required placeholder="••••••••">
+                                </div>
+                                <button type="submit" class="btn">Đăng Nhập</button>
+                                <button type="button" class="btn btn-secondary" onclick="showHomePage()">Quay Lại</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      function handleAdminLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById("adminEmail").value;
+        const password = document.getElementById("adminPassword").value;
+        const errorMsg = document.getElementById("errorMsg");
+
+        if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+          showAdminDashboard();
+        } else {
+          errorMsg.textContent = "Email hoặc mật khẩu không đúng!";
+          errorMsg.classList.remove("hidden");
+        }
+      }
+
+      function showAdminDashboard() {
+        currentView = "admin-dashboard";
+        currentFolderId = null;
+        const app = document.getElementById("app");
+        app.innerHTML = `
+                <div class="container">
+                    <div class="header">
+                        <h1>🗂️ Quản Lý Hệ Thống</h1>
+                    </div>
+                    <div class="nav-bar">
+                        <div class="user-info">👨‍🏫 Giáo viên: ${ADMIN_EMAIL}</div>
+                        <button class="btn-logout" onclick="showHomePage()">Đăng Xuất</button>
+                    </div>
+                    <div class="dashboard">
+                        <div style="display: flex; gap: 10px; margin-bottom: 30px;">
+                            <button class="btn-small btn-primary" onclick="showCreateExamForm('default')">
+                                ➕ Thêm Đề Mới
+                            </button>
+                            <button class="btn-small btn-view" onclick="promptCreateFolder()">
+                                📂 Tạo Thư Mục Mới
+                            </button>
+                            <button class="btn-small btn-tertiary" onclick="showStudentManagement()">
+                                🧑‍🎓 Quản Lý Học Sinh (${students.length})
+                            </button>
+                        </div>
+                        
+                        <h2 style="margin-bottom: 20px;">📚 Thư Mục Đề Thi (${
+                          folders.length
+                        })</h2>
+                        <div class="folder-container">
+                            ${folders
+                              .map((folder) => {
+                                const examCount = exams.filter(
+                                  (e) => e.folderId === folder.id
+                                ).length;
+                                return `
+                                        <div class="folder-card" onclick="viewFolder('${
+                                          folder.id
+                                        }', '${folder.name}')">
+                                            <h3>${folder.name}</h3>
+                                            <p style="font-size: 0.9em; color: #555;">(${examCount} đề thi)</p>
+                                            ${
+                                              folder.id !== "default"
+                                                ? `<button class="btn-small btn-delete" style="width: auto; margin-top: 10px;" onclick="event.stopPropagation(); deleteFolder('${folder.id}')">🗑️ Xóa</button>`
+                                                : ""
+                                            }
+                                        </div>
+                                    `;
+                              })
+                              .join("")}
+                        </div>
+                        
+                        <div style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
+                            <h2 style="margin-bottom: 10px;">📊 Tổng Quan Lịch Sử Thi</h2>
+                            <p>Tổng số bài làm: <strong>${
+                              history.length
+                            }</strong></p>
+                            <button class="btn-small btn-tertiary" onclick="showAllHistoryAdmin()">Xem Tất Cả Bài Làm</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      // --- Folder & Exam Management (Admin) ---
+
+      // (Giữ nguyên các hàm: promptCreateFolder, deleteFolder, viewFolder, showCreateExamForm, handleFileUpload, updatePreview, clearUploadedImages, parseAnswers, saveExam, displayExamList, viewExamAdmin, deleteExam)
+
+      function promptCreateFolder() {
+        const folderName = prompt("Nhập tên thư mục mới:");
+        if (folderName && folderName.trim()) {
+          const newFolder = {
+            id: Date.now().toString(),
+            name: folderName.trim(),
+          };
+          folders.push(newFolder);
+          saveFolders();
+          showAdminDashboard();
+        }
+      }
+
+      function deleteFolder(folderId) {
+        const folder = folders.find((f) => f.id === folderId);
+        if (!folder || folder.id === "default") return;
+
+        const defaultFolder = folders.find((f) => f.id === "default");
+        if (!defaultFolder) return;
+
+        const examsInFolder = exams.filter((e) => e.folderId === folderId);
+        if (examsInFolder.length > 0) {
+          if (
+            !confirm(
+              `Thư mục "${folder.name}" có ${examsInFolder.length} đề thi. Bạn có chắc muốn xóa thư mục và chuyển các đề này về "${defaultFolder.name}"?`
+            )
+          ) {
+            return;
+          }
+          examsInFolder.forEach((e) => (e.folderId = "default"));
+          saveExams();
+        } else {
+          if (!confirm(`Bạn có chắc muốn xóa thư mục "${folder.name}"?`)) {
+            return;
+          }
+        }
+
+        // Cập nhật quyền truy cập của học sinh
+        students.forEach((student) => {
+          student.allowedFolders = student.allowedFolders.filter(
+            (id) => id !== folderId
+          );
+        });
+        saveStudents();
+
+        folders = folders.filter((f) => f.id !== folderId);
+        saveFolders();
+        showAdminDashboard();
+      }
+
+      function viewFolder(folderId, folderName) {
+        currentFolderId = folderId;
+        const app = document.getElementById("app");
+        app.innerHTML = `
+                <div class="container">
+                    <div class="header">
+                        <h1>📂 ${folderName}</h1>
+                        <p>Quản lý đề thi trong thư mục</p>
+                    </div>
+                    <div class="nav-bar">
+                        <button class="btn-logout" onclick="showAdminDashboard()">← Về Thư Mục</button>
+                    </div>
+                    <div class="dashboard">
+                        <div style="display: flex; gap: 10px; margin-bottom: 20px; justify-content: space-between;">
+                            <button class="btn-small btn-primary" style="width: auto;" onclick="showCreateExamForm('${folderId}')">
+                                ➕ Thêm Đề Mới vào ${folderName}
+                            </button>
+                            <div class="search-bar" style="width: 300px;">
+                                <input type="text" id="adminSearch" placeholder="Tìm kiếm đề thi..." oninput="displayExamList(event.target.value)">
+                            </div>
+                        </div>
+                        
+                        <div class="exam-list">
+                            <h2 style="margin-bottom: 20px;">📝 Danh Sách Đề Thi</h2>
+                            <div id="examListContainer"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        displayExamList();
+      }
+
+      function showCreateExamForm(folderId) {
+        const folder =
+          folders.find((f) => f.id === folderId) ||
+          folders.find((f) => f.id === "default");
+        if (!folder) return;
+
+        currentFolderId = folderId;
+        uploadedImages = [];
+
+        const app = document.getElementById("app");
+        app.innerHTML = `
+                <div class="container">
+                    <div class="header">
+                        <h1>➕ Tạo Đề Thi Mới</h1>
+                        <p>Lưu trong thư mục: ${folder.name}</p>
+                    </div>
+                    <div class="nav-bar">
+                        <button class="btn-logout" onclick="viewFolder('${folder.id}', '${folder.name}')">← Quay lại</button>
+                    </div>
+                    <div class="dashboard">
+                        <div class="upload-section">
+                            <h2 style="margin-bottom: 20px;">Thông tin đề thi</h2>
+                            <div class="form-group">
+                                <label>Tên đề thi:</label>
+                                <input type="text" id="examTitle" placeholder="VD: Đề thi Toán học kỳ 1">
+                            </div>
+                            <div class="form-group">
+                                <label>Đáp án (Mỗi dòng một câu, ví dụ: 1. A hoặc 3. C,D hoặc A):</label>
+                                <textarea id="examAnswers" rows="5" placeholder="1. A&#10;2. B&#10;3. C,D&#10;..."></textarea>
+                                <small style="color: #555;">**Lưu ý:** Đáp án đúng cho mỗi câu, phân cách đáp án đúng với nhau bằng dấu phẩy (C,D).</small>
+                            </div>
+                            <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                                <div style="font-size: 3em; margin-bottom: 10px;">📤</div>
+                                <h3>Kéo thả ảnh câu hỏi vào đây</h3>
+                                <p style="margin-top: 10px; color: #666;">Hỗ trợ nhiều ảnh (JPG, PNG, GIF)</p>
+                                <input type="file" id="fileInput" multiple accept="image/*" onchange="handleFileUpload(event)">
+                            </div>
+                            <div id="previewArea" style="margin-top: 20px;"></div>
+                            <button class="btn" style="margin-top: 20px;" onclick="saveExam()">💾 Lưu Đề Thi</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        updatePreview();
+      }
+
+      let uploadedImages = [];
+
+      function handleFileUpload(e) {
+        const files = Array.from(e.target.files);
+
+        files.forEach((file) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            uploadedImages.push(e.target.result);
+            updatePreview();
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function updatePreview() {
+        const previewArea = document.getElementById("previewArea");
+        if (!previewArea) return;
+
+        if (uploadedImages.length === 0) {
+          previewArea.innerHTML = "";
+          return;
+        }
+
+        previewArea.innerHTML = `
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 8px;">
+                    <strong>Đã tải lên ${uploadedImages.length} câu hỏi</strong>
+                    <button class="btn-small btn-delete" onclick="clearUploadedImages()" style="margin-left: 10px;">Xóa</button>
+                </div>
+            `;
+      }
+
+      function clearUploadedImages() {
+        uploadedImages = [];
+        const fileInput = document.getElementById("fileInput");
+        if (fileInput) fileInput.value = "";
+        updatePreview();
+      }
+
+      function parseAnswers(answerText, numQuestions) {
+        const lines = answerText
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line.length > 0);
+
+        const answers = {};
+        let questionIndex = 1;
+
+        for (const line of lines) {
+          let match = line.match(/^(\d+)\.?\s*([A-Za-z,\s]+)$/);
+          let qId = questionIndex;
+          let ansStr;
+
+          if (match) {
+            qId = parseInt(match[1]);
+            ansStr = match[2];
+          } else {
+            ansStr = line;
+          }
+
+          if (qId >= 1 && qId <= numQuestions) {
+            answers[qId] = ansStr
+              .toUpperCase()
+              .replace(/\s/g, "")
+              .split(",")
+              .filter((a) => a.length > 0 && OPTIONS.includes(a));
+          }
+          questionIndex++;
+        }
+
+        if (Object.keys(answers).length === 0 && lines.length > 0) {
+          for (let i = 0; i < lines.length && i < numQuestions; i++) {
+            let ansStr = lines[i];
+            answers[i + 1] = ansStr
+              .toUpperCase()
+              .replace(/\s/g, "")
+              .split(",")
+              .filter((a) => a.length > 0 && OPTIONS.includes(a));
+          }
+        }
+
+        for (let i = 1; i <= numQuestions; i++) {
+          if (!answers[i] || answers[i].length === 0) {
+            answers[i] = null;
+          }
+        }
+
+        return answers;
+      }
+
+      function saveExam() {
+        const title = document.getElementById("examTitle").value.trim();
+        const answerText = document.getElementById("examAnswers").value.trim();
+        const numQuestions = uploadedImages.length;
+        const folder =
+          folders.find((f) => f.id === currentFolderId) ||
+          folders.find((f) => f.id === "default");
+
+        if (!title) {
+          alert("Vui lòng nhập tên đề thi!");
+          return;
+        }
+
+        if (numQuestions === 0) {
+          alert("Vui lòng upload ít nhất 1 câu hỏi!");
+          return;
+        }
+
+        if (!answerText) {
+          alert("Vui lòng nhập đáp án cho đề thi!");
+          return;
+        }
+
+        const correctAnswers = parseAnswers(answerText, numQuestions);
+        const answeredCount = Object.keys(correctAnswers).filter(
+          (id) => correctAnswers[id] !== null
+        ).length;
+
+        if (answeredCount < numQuestions) {
+          if (
+            !confirm(
+              `Bạn chỉ nhập đáp án cho ${answeredCount}/${numQuestions} câu hỏi. Bạn có chắc muốn lưu đề thi?`
+            )
+          ) {
+            return;
+          }
+        }
+
+        const exam = {
+          id: Date.now(),
+          title: title,
+          folderId: folder.id,
+          questions: uploadedImages.map((img, index) => ({
+            id: index + 1,
+            image: img,
+            correctAnswer: correctAnswers[index + 1] || null,
+          })),
+          createdAt: new Date().toLocaleString("vi-VN"),
+        };
+
+        exams.push(exam);
+        saveExams();
+
+        alert(`✅ Đã lưu đề thi "${title}" vào thư mục "${folder.name}"!`);
+
+        viewFolder(folder.id, folder.name);
+      }
+
+      function displayExamList(searchTerm = "") {
+        const container = document.getElementById("examListContainer");
+        if (!container) return;
+
+        const currentExams = exams
+          .filter((e) => e.folderId === currentFolderId)
+          .filter((e) =>
+            e.title.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+
+        if (currentExams.length === 0 && !searchTerm) {
+          container.innerHTML =
+            '<p style="text-align: center; color: #999; padding: 40px;">Chưa có đề thi nào trong thư mục này.</p>';
+          return;
+        }
+
+        if (currentExams.length === 0 && searchTerm) {
+          container.innerHTML = `<p style="text-align: center; color: #999; padding: 40px;">Không tìm thấy đề thi nào với từ khóa "${searchTerm}".</p>`;
+          return;
+        }
+
+        container.innerHTML = currentExams
+          .map(
+            (exam) => `
+                <div class="exam-card">
+                    <h3>📄 ${exam.title}</h3>
+                    <div class="exam-info">
+                        <div>📅 Ngày tạo: ${exam.createdAt}</div>
+                        <div>📝 Số câu hỏi: ${exam.questions.length}</div>
+                    </div>
+                    <button class="btn-small btn-view" onclick="viewExamAdmin(${exam.id})">👁️ Xem</button>
+                    <button class="btn-small btn-delete" onclick="deleteExam(${exam.id})">🗑️ Xóa</button>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function viewExamAdmin(examId) {
+        const exam = exams.find((e) => e.id === examId);
+        if (!exam) return;
+
+        const folder =
+          folders.find((f) => f.id === exam.folderId) ||
+          folders.find((f) => f.id === "default");
+
+        const answerHtml = exam.questions
+          .map((q, index) => {
+            const answer = q.correctAnswer
+              ? q.correctAnswer.join(", ")
+              : '<em style="color:#dc3545;">Chưa có</em>';
+            return `<p><strong>Câu ${index + 1}:</strong> ${answer}</p>`;
+          })
+          .join("");
+
+        const app = document.getElementById("app");
+        app.innerHTML = `
+                <div class="container">
+                    <div class="header">
+                        <h1>${exam.title}</h1>
+                        <p>Trong thư mục: ${folder.name} | Có ${
+          exam.questions.length
+        } câu hỏi</p>
+                    </div>
+                    <div class="nav-bar">
+                        <button class="btn-logout" onclick="viewFolder('${
+                          folder.id
+                        }', '${folder.name}')">← Quay lại</button>
+                    </div>
+                    <div class="dashboard">
+                        <div style="margin-bottom: 20px; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+                            <h2>🔑 Đáp án đúng</h2>
+                            <div style="columns: 2; column-gap: 30px;">
+                                ${answerHtml}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="exam-display" style="padding-top: 0;">
+                        <div class="question-container">
+                            ${exam.questions
+                              .map(
+                                (q, index) => `
+                                <div class="question-item">
+                                    <div class="question-header">Câu ${
+                                      index + 1
+                                    }</div>
+                                    <img src="${q.image}" alt="Câu ${
+                                  index + 1
+                                }" class="question-image">
+                                </div>
+                            `
+                              )
+                              .join("")}
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      function deleteExam(examId) {
+        const exam = exams.find((e) => e.id === examId);
+        if (!exam) return;
+
+        const folder =
+          folders.find((f) => f.id === exam.folderId) ||
+          folders.find((f) => f.id === "default");
+
+        if (confirm(`Bạn có chắc muốn xóa đề thi "${exam.title}"?`)) {
+          exams = exams.filter((e) => e.id !== examId);
+          saveExams();
+          history = history.filter((h) => h.examId !== examId);
+          saveHistory();
+
+          viewFolder(folder.id, folder.name);
+        }
+      }
+
+      // --- Student Management (Admin) ---
+
+      function showStudentManagement() {
+        currentView = "admin-students";
+        const app = document.getElementById("app");
+
+        const studentListHtml = students
+          .map((student) => {
+            const allowedFolderNames = student.allowedFolders
+              .map((fid) => {
+                const folder = folders.find((f) => f.id === fid);
+                return folder ? folder.name : "Không tồn tại";
+              })
+              .join(", ");
+
+            return `
+                <div class="exam-card" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3>🧑‍🎓 ${student.name}</h3>
+                        <p><strong>ID:</strong> ${student.id}</p>
+                        <p style="font-size: 0.9em; color: #555;"><strong>Quyền truy cập:</strong> ${
+                          allowedFolderNames || "Không có"
+                        }</p>
+                    </div>
+                    <div>
+                        <button class="btn-small btn-primary" onclick="showCreateStudentForm('${
+                          student.id
+                        }')">✏️ Sửa</button>
+                        <button class="btn-small btn-delete" onclick="deleteStudent('${
+                          student.id
+                        }')">🗑️ Xóa</button>
+                    </div>
+                </div>
+            `;
+          })
+          .join("");
+
+        app.innerHTML = `
+            <div class="container">
+                <div class="header">
+                    <h1>🧑‍🎓 Quản Lý Tài Khoản Học Sinh</h1>
+                    <p>Tạo và cấp quyền truy cập đề thi cho học sinh</p>
+                </div>
+                <div class="nav-bar">
+                    <button class="btn-logout" onclick="showAdminDashboard()">← Về Dashboard</button>
+                </div>
+                <div class="dashboard">
+                    <button class="btn-small btn-view" style="width: auto; margin-bottom: 20px;" onclick="showCreateStudentForm()">
+                        ➕ Thêm Học Sinh Mới
+                    </button>
+                    
+                    <h2 style="margin-bottom: 20px;">Danh Sách Học Sinh (${
+                      students.length
+                    })</h2>
+                    <div class="student-list">
+                        ${
+                          studentListHtml ||
+                          '<p style="text-align: center; color: #999; padding: 40px;">Chưa có tài khoản học sinh nào.</p>'
+                        }
+                    </div>
+                </div>
+            </div>
+        `;
+      }
+
+      function showCreateStudentForm(studentId = null) {
+        const isEdit = studentId !== null;
+        const studentToEdit = isEdit
+          ? students.find((s) => s.id === studentId)
+          : { name: "", id: "", allowedFolders: [] };
+
+        const folderCheckboxes = folders
+          .map((folder) => {
+            const isChecked = studentToEdit.allowedFolders.includes(folder.id);
+            return `
+                <div style="margin-bottom: 8px;">
+                    <input type="checkbox" id="folder_${folder.id}" value="${
+              folder.id
+            }" ${isChecked ? "checked" : ""} style="margin-right: 10px;">
+                    <label for="folder_${folder.id}">${folder.name} (${
+              exams.filter((e) => e.folderId === folder.id).length
+            } đề)</label>
+                </div>
+            `;
+          })
+          .join("");
+
+        const app = document.getElementById("app");
+        app.innerHTML = `
+            <div class="container">
+                <div class="header">
+                    <h1>${
+                      isEdit
+                        ? "✏️ Sửa Tài Khoản Học Sinh"
+                        : "➕ Tạo Tài Khoản Học Sinh"
+                    }</h1>
+                </div>
+                <div class="nav-bar">
+                    <button class="btn-logout" onclick="showStudentManagement()">← Về Quản Lý Học Sinh</button>
+                </div>
+                <div class="login-container">
+                    <div class="login-box">
+                        <h2 class="login-title">${
+                          isEdit ? "Sửa thông tin" : "Tạo mới"
+                        }</h2>
+                        <div id="errorMsg" class="error-message hidden"></div>
+                        <form onsubmit="handleSaveStudent(event, ${
+                          isEdit ? `'${studentId}'` : "null"
+                        })">
+                            <div class="form-group">
+                                <label>Họ và tên:</label>
+                                <input type="text" id="studentName" required value="${
+                                  studentToEdit.name
+                                }">
+                            </div>
+                            <div class="form-group">
+                                <label>Mã/ID Học sinh (Dùng để đăng nhập, ví dụ: 12345):</label>
+                                <input type="text" id="studentId" required value="${
+                                  studentToEdit.id
+                                }" ${isEdit ? "readonly" : ""}>
+                                ${
+                                  isEdit
+                                    ? '<small style="color: #dc3545;">*ID không thể sửa</small>'
+                                    : ""
+                                }
+                            </div>
+                            <div class="form-group" style="border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
+                                <label style="margin-bottom: 10px;"><strong>Cấp quyền truy cập thư mục:</strong></label>
+                                ${folderCheckboxes}
+                            </div>
+                            <button type="submit" class="btn">${
+                              isEdit ? "💾 Cập Nhật" : "➕ Tạo Tài Khoản"
+                            }</button>
+                            <button type="button" class="btn btn-secondary" onclick="showStudentManagement()">Hủy</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        `;
+      }
+
+      function handleSaveStudent(e, oldId) {
+        e.preventDefault();
+        const name = document.getElementById("studentName").value.trim();
+        const newId = document.getElementById("studentId").value.trim();
+        const errorMsg = document.getElementById("errorMsg");
+
+        const selectedFolders = folders
+          .filter((folder) => {
+            const checkbox = document.getElementById(`folder_${folder.id}`);
+            return checkbox && checkbox.checked;
+          })
+          .map((f) => f.id);
+
+        if (!name || !newId) {
+          errorMsg.textContent = "Vui lòng nhập đủ Họ tên và ID!";
+          errorMsg.classList.remove("hidden");
+          return;
+        }
+
+        if (oldId === null) {
+          // Check if ID exists for new student
+          if (students.some((s) => s.id === newId)) {
+            errorMsg.textContent = `ID "${newId}" đã tồn tại! Vui lòng chọn ID khác.`;
+            errorMsg.classList.remove("hidden");
+            return;
+          }
+          // Add new student
+          students.push({
+            name: name,
+            id: newId,
+            allowedFolders: selectedFolders,
+          });
+          alert(`✅ Đã tạo tài khoản học sinh "${name}" (${newId})!`);
+        } else {
+          // Edit existing student
+          const index = students.findIndex((s) => s.id === oldId);
+          if (index > -1) {
+            students[index].name = name;
+            students[index].allowedFolders = selectedFolders;
+            alert(`✅ Đã cập nhật tài khoản học sinh "${name}" (${newId})!`);
+          }
+        }
+
+        saveStudents();
+        showStudentManagement();
+      }
+
+      function deleteStudent(studentId) {
+        const student = students.find((s) => s.id === studentId);
+        if (!student) return;
+
+        if (
+          confirm(
+            `Bạn có chắc muốn xóa tài khoản học sinh "${student.name}" (ID: ${student.id})? Tất cả lịch sử thi của học sinh này sẽ được giữ lại.`
+          )
+        ) {
+          students = students.filter((s) => s.id !== studentId);
+          saveStudents();
+          showStudentManagement();
+        }
+      }
+
+      function showAllHistoryAdmin() {
+        currentView = "admin-all-history";
+        const allHistory = history.sort((a, b) => b.timestamp - a.timestamp);
+
+        const historyListHtml =
+          allHistory
+            .map((h) => {
+              const exam = exams.find((e) => e.id === h.examId) || {
+                title: "Đề thi đã bị xóa",
+                questions: [],
+              };
+              return `
+                  <div class="history-card">
+                      <div>
+                          <p><strong>📄 ${exam.title}</strong></p>
+                          <p>🧑‍🎓 ${h.studentName} (ID: ${h.studentId})</p>
+                          <p style="font-size: 0.9em; color: #666;">📅 ${
+                            h.date
+                          }</p>
+                      </div>
+                      <div style="text-align: right;">
+                          <p style="font-size: 1.2em; font-weight: bold; color: ${
+                            h.score >= 5 ? "#28a745" : "#dc3545"
+                          };">${h.score} / 10</p>
+                          <p style="font-size: 0.9em; color: #666;">Đúng: ${
+                            h.correctCount
+                          }/${h.totalQuestions}</p>
+                          <button class="btn-small btn-primary" onclick="showReviewAdmin(${
+                            h.id
+                          })">Xem Chi Tiết</button>
+                      </div>
+                  </div>
+              `;
+            })
+            .join("") ||
+          '<p style="text-align: center; color: #999; padding: 40px;">Chưa có bài làm nào.</p>';
+
+        const app = document.getElementById("app");
+        app.innerHTML = `
+              <div class="container">
+                  <div class="header">
+                      <h1>📚 Toàn Bộ Lịch Sử Thi</h1>
+                      <p>Tổng hợp bài làm của tất cả học sinh</p>
+                  </div>
+                  <div class="nav-bar">
+                      <button class="btn-logout" onclick="showAdminDashboard()">← Về Dashboard</button>
+                  </div>
+                  <div class="dashboard">
+                      <h2 style="margin-bottom: 20px;">Các Bài Đã Nộp (${allHistory.length})</h2>
+                      <div class="history-list">
+                          ${historyListHtml}
+                      </div>
+                  </div>
+              </div>
+            `;
+      }
+
+      function showReviewAdmin(historyId) {
+        const historyItem = history.find((h) => h.id === historyId);
+        if (!historyItem) return;
+
+        const exam = exams.find((e) => e.id === historyItem.examId);
+        if (!exam) {
+          alert("Đề thi này đã bị xóa!");
+          return;
+        }
+
+        currentExam = exam;
+        studentAnswers = historyItem.studentAnswers;
+
+        // Tái sử dụng hàm showResult với isReviewMode = true
+        showResult(
+          historyItem.score,
+          historyItem.correctCount,
+          historyItem.incorrectCount,
+          historyItem.unansweredCount,
+          true,
+          historyItem.studentName,
+          "showAllHistoryAdmin" // Nút quay lại sẽ về màn hình lịch sử Admin
+        );
+      }
+
+      // --- Student Views ---
+
+      function showStudentLogin() {
+        currentView = "student-login";
+        const app = document.getElementById("app");
+        app.innerHTML = `
+                <div class="container">
+                    <div class="header">
+                        <h1>👨‍🎓 Tham Gia Thi</h1>
+                    </div>
+                    <div class="student-login">
+                        <div class="login-box">
+                            <h2 class="login-title">Đăng Nhập Học Sinh</h2>
+                            <div id="errorMsg" class="error-message hidden"></div>
+                            <form onsubmit="handleStudentLogin(event)">
+                                <div class="form-group">
+                                    <label>Họ và tên:</label>
+                                    <input type="text" id="studentName" required placeholder="Nguyễn Văn A">
+                                </div>
+                                <div class="form-group">
+                                    <label>Mã/ID Học sinh:</label>
+                                    <input type="text" id="studentId" required placeholder="12345">
+                                </div>
+                                <button type="submit" class="btn">Vào Thi</button>
+                                <button type="button" class="btn btn-secondary" onclick="showHomePage()">Quay Lại</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      function handleStudentLogin(e) {
+        e.preventDefault();
+        const name = document.getElementById("studentName").value.trim();
+        const id = document.getElementById("studentId").value.trim();
+        const errorMsg = document.getElementById("errorMsg");
+
+        const student = students.find(
+          (s) =>
+            s.id.toUpperCase() === id.toUpperCase() &&
+            s.name.toUpperCase() === name.toUpperCase()
+        );
+
+        if (!student) {
+          errorMsg.textContent = "Họ tên hoặc Mã/ID học sinh không đúng!";
+          errorMsg.classList.remove("hidden");
+          return;
+        }
+
+        if (student.allowedFolders.length === 0) {
+          errorMsg.textContent =
+            "Bạn chưa được cấp quyền truy cập đề thi nào. Vui lòng liên hệ giáo viên.";
+          errorMsg.classList.remove("hidden");
+          return;
+        }
+
+        currentStudent = student;
+        showStudentFolderSelection();
+      }
+
+      function showStudentFolderSelection() {
+        currentView = "student-folder-selection";
+        if (!currentStudent) {
+          showHomePage();
+          return;
+        }
+
+        const app = document.getElementById("app");
+
+        const historyCount = history.filter(
+          (h) => h.studentId === currentStudent.id
+        ).length;
+
+        const allowedFolders = folders.filter((f) =>
+          currentStudent.allowedFolders.includes(f.id)
+        );
+
+        const folderListHtml = allowedFolders
+          .map((folder) => {
+            const examCount = exams.filter(
+              (e) => e.folderId === folder.id
+            ).length;
+            if (examCount === 0) return "";
+
+            return `
+                  <div class="folder-card" onclick="showExamSelection('${folder.id}', '${folder.name}')">
+                      <h3>📂 ${folder.name}</h3>
+                      <p style="font-size: 0.9em; color: #555;">(${examCount} đề thi)</p>
+                  </div>
+              `;
+          })
+          .join("");
+
+        app.innerHTML = `
+                <div class="container">
+                    <div class="header">
+                        <h1>Chọn Thư Mục Đề Thi</h1>
+                        <p>Học sinh: ${currentStudent.name} (ID: ${
+          currentStudent.id
+        })</p>
+                    </div>
+                    <div class="nav-bar">
+                        <button class="btn-logout" onclick="showHomePage()">← Đăng xuất</button>
+                    </div>
+                    <div class="dashboard">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <button class="btn btn-tertiary" style="width: auto;" onclick="showHistory()">
+                                📚 Xem Lịch Sử Thi (${historyCount})
+                            </button>
+                        </div>
+                        
+                        <h2 style="margin-bottom: 20px;">📚 Danh Sách Thư Mục Có Thể Thi</h2>
+                        <div class="folder-container">
+                            ${
+                              folderListHtml ||
+                              '<p style="text-align: center; color: #999; width: 100%; padding: 40px;">Hiện chưa có đề thi nào trong các thư mục bạn được phép truy cập.</p>'
+                            }
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      function showExamSelection(folderId, folderName, searchTerm = "") {
+        currentView = "exam-selection";
+        if (!currentStudent) {
+          showHomePage();
+          return;
+        }
+
+        const app = document.getElementById("app");
+
+        const filteredExams = exams
+          .filter((e) => e.folderId === folderId)
+          .filter((e) =>
+            e.title.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+
+        const examListHtml = filteredExams
+          .map((exam) => {
+            return `
+                      <div class="exam-card">
+                          <h3>📄 ${exam.title}</h3>
+                          <div class="exam-info">
+                              <div>📝 Số câu hỏi: ${exam.questions.length}</div>
+                              <div>🔑 Số câu có đáp án: ${
+                                exam.questions.filter((q) => q.correctAnswer)
+                                  .length
+                              }</div>
+                          </div>
+                          <button class="btn-small btn-view" onclick="startExam(${
+                            exam.id
+                          })">Bắt Đầu Thi</button>
+                      </div>
+                  `;
+          })
+          .join("");
+
+        app.innerHTML = `
+                <div class="container">
+                    <div class="header">
+                        <h1>Chọn Đề Thi (${folderName})</h1>
+                        <p>Học sinh: ${currentStudent.name}</p>
+                    </div>
+                    <div class="nav-bar">
+                        <button class="btn-logout" onclick="showStudentFolderSelection()">← Về Thư Mục</button>
+                    </div>
+                    <div class="dashboard">
+                        <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px;">
+                            <div class="search-bar" style="width: 300px;">
+                                <input type="text" id="studentSearch" placeholder="Tìm kiếm đề thi..." value="${searchTerm}" oninput="showExamSelection('${folderId}', '${folderName}', event.target.value)">
+                            </div>
+                        </div>
+                        
+                        <div class="exam-list">
+                            ${
+                              filteredExams.length > 0
+                                ? examListHtml
+                                : `<p style="text-align: center; color: #999; padding: 40px;">Không tìm thấy đề thi nào ${
+                                    searchTerm
+                                      ? `với từ khóa "${searchTerm}"`
+                                      : ""
+                                  } trong thư mục này.</p>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      function showHistory() {
+        currentView = "student-history";
+        if (!currentStudent) {
+          showHomePage();
+          return;
+        }
+
+        const studentHistory = history
+          .filter((h) => h.studentId === currentStudent.id)
+          .sort((a, b) => b.timestamp - a.timestamp);
+
+        const historyListHtml =
+          studentHistory
+            .map((h) => {
+              const exam = exams.find((e) => e.id === h.examId) || {
+                title: "Đề thi đã bị xóa",
+                questions: [],
+              };
+              return `
+                  <div class="history-card">
+                      <div>
+                          <p><strong>📄 ${exam.title}</strong></p>
+                          <p style="font-size: 0.9em; color: #666;">📅 ${
+                            h.date
+                          }</p>
+                      </div>
+                      <div style="text-align: right;">
+                          <p style="font-size: 1.2em; font-weight: bold; color: ${
+                            h.score >= 5 ? "#28a745" : "#dc3545"
+                          };">${h.score} / 10</p>
+                          <p style="font-size: 0.9em; color: #666;">Đúng: ${
+                            h.correctCount
+                          }/${h.totalQuestions}</p>
+                          <button class="btn-small btn-primary" onclick="showReview(${
+                            h.id
+                          })">Xem Chi Tiết</button>
+                      </div>
+                  </div>
+              `;
+            })
+            .join("") ||
+          '<p style="text-align: center; color: #999; padding: 40px;">Chưa có bài làm nào.</p>';
+
+        const app = document.getElementById("app");
+        app.innerHTML = `
+              <div class="container">
+                  <div class="header">
+                      <h1>📚 Lịch Sử Làm Bài</h1>
+                      <p>Học sinh: ${currentStudent.name}</p>
+                  </div>
+                  <div class="nav-bar">
+                      <button class="btn-logout" onclick="showStudentFolderSelection()">← Quay lại</button>
+                  </div>
+                  <div class="dashboard">
+                      <h2 style="margin-bottom: 20px;">Các Bài Đã Nộp (${studentHistory.length})</h2>
+                      <div class="history-list">
+                          ${historyListHtml}
+                      </div>
+                  </div>
+              </div>
+            `;
+      }
+
+      function showReview(historyId) {
+        const historyItem = history.find((h) => h.id === historyId);
+        if (!historyItem) return;
+
+        const exam = exams.find((e) => e.id === historyItem.examId);
+        if (!exam) {
+          alert("Đề thi này đã bị xóa!");
+          return;
+        }
+
+        currentExam = exam;
+        studentAnswers = historyItem.studentAnswers;
+
+        showResult(
+          historyItem.score,
+          historyItem.correctCount,
+          historyItem.incorrectCount,
+          historyItem.unansweredCount,
+          true,
+          currentStudent.name,
+          "showHistory" // Nút quay lại sẽ về màn hình lịch sử học sinh
+        );
+      }
+
+      function startExam(examId) {
+        currentView = "in-exam";
+        if (!currentStudent) {
+          showHomePage();
+          return;
+        }
+
+        currentExam = exams.find((e) => e.id === examId);
+        studentAnswers = {};
+
+        const app = document.getElementById("app");
+        app.innerHTML = `
+                <div class="container">
+                    <div class="header">
+                        <h1>${currentExam.title}</h1>
+                        <p>Học sinh: ${currentStudent.name} | Số câu: ${
+          currentExam.questions.length
+        }</p>
+                    </div>
+                    <div class="exam-display">
+                        <div class="question-container">
+                            ${currentExam.questions
+                              .map(
+                                (q, index) => `
+                                <div class="question-item">
+                                    <div class="question-header">Câu ${
+                                      index + 1
+                                    }</div>
+                                    <img src="${q.image}" alt="Câu ${
+                                  index + 1
+                                }" class="question-image">
+                                    <div class="answer-section">
+                                        <strong>Chọn đáp án:</strong>
+                                        <div class="answer-options" id="q${
+                                          index + 1
+                                        }_options">
+                                            ${OPTIONS.map(
+                                              (opt) => `
+                                                <div class="answer-option" onclick="selectAnswer(${
+                                                  index + 1
+                                                }, '${opt}')">
+                                                    <input type="checkbox" name="q${
+                                                      index + 1
+                                                    }" value="${opt}" id="q${
+                                                index + 1
+                                              }_${opt}" onchange="updateMultiAnswer(${
+                                                index + 1
+                                              }, '${opt}', this.checked)">
+                                                    <label for="q${
+                                                      index + 1
+                                                    }_${opt}">Đáp án ${opt}</label>
+                                                </div>
+                                            `
+                                            ).join("")}
+                                        </div>
+                                    </div>
+                                </div>
+                            `
+                              )
+                              .join("")}
+                        </div>
+                        <div class="submit-exam">
+                            <button class="btn" onclick="submitExam()" style="padding: 15px 50px; font-size: 1.2em;">
+                                ✅ Nộp Bài
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      function updateMultiAnswer(questionId, answer, isChecked) {
+        if (!studentAnswers[questionId]) {
+          studentAnswers[questionId] = [];
+        }
+
+        const index = studentAnswers[questionId].indexOf(answer);
+
+        if (isChecked && index === -1) {
+          studentAnswers[questionId].push(answer);
+        } else if (!isChecked && index > -1) {
+          studentAnswers[questionId].splice(index, 1);
+        }
+
+        const optionsContainer = document
+          .getElementById(`q${questionId}_options`)
+          .querySelectorAll(".answer-option");
+        optionsContainer.forEach((option) => {
+          const input = option.querySelector("input");
+          if (input.checked) {
+            option.classList.add("selected");
+          } else {
+            option.classList.remove("selected");
+          }
+        });
+      }
+
+      function selectAnswer(questionId, answer) {
+        const checkbox = document.getElementById(`q${questionId}_${answer}`);
+        if (checkbox) {
+          checkbox.checked = !checkbox.checked;
+          updateMultiAnswer(questionId, answer, checkbox.checked);
+        }
+      }
+
+      function submitExam() {
+        if (!currentStudent) {
+          showHomePage();
+          return;
+        }
+
+        const totalQuestions = currentExam.questions.length;
+
+        const answeredQuestions = Object.keys(studentAnswers).filter(
+          (qId) => studentAnswers[qId] && studentAnswers[qId].length > 0
+        ).length;
+
+        if (answeredQuestions < totalQuestions) {
+          if (
+            !confirm(
+              `Bạn mới làm ${answeredQuestions}/${totalQuestions} câu. Bạn có chắc muốn nộp bài?`
+            )
+          ) {
+            return;
+          }
+        }
+
+        let correctCount = 0;
+        let incorrectCount = 0;
+
+        const checkableQuestions = currentExam.questions.filter(
+          (q) => q.correctAnswer && q.correctAnswer.length > 0
+        );
+
+        currentExam.questions.forEach((q) => {
+          const studentAns = studentAnswers[q.id] || [];
+          const correctAns = q.correctAnswer || [];
+
+          if (correctAns.length === 0) {
+            return;
+          }
+
+          if (studentAns.length === 0) {
+            return;
+          }
+
+          const isCorrect =
+            correctAns.length === studentAns.length &&
+            correctAns.every((ans) => studentAns.includes(ans));
+
+          if (isCorrect) {
+            correctCount++;
+          } else {
+            incorrectCount++;
+          }
+        });
+
+        const totalScore = 10;
+        const scorePerQuestion =
+          checkableQuestions.length > 0
+            ? totalScore / checkableQuestions.length
+            : 0;
+
+        const finalScore = (correctCount * scorePerQuestion).toFixed(2);
+
+        const unansweredCount = totalQuestions - correctCount - incorrectCount;
+
+        const newHistoryItem = {
+          id: Date.now(),
+          examId: currentExam.id,
+          studentName: currentStudent.name,
+          studentId: currentStudent.id, // Thêm studentId
+          score: parseFloat(finalScore),
+          correctCount: correctCount,
+          incorrectCount: incorrectCount,
+          unansweredCount: unansweredCount,
+          totalQuestions: totalQuestions,
+          date: new Date().toLocaleString("vi-VN"),
+          timestamp: Date.now(),
+          studentAnswers: { ...studentAnswers },
+        };
+
+        history.push(newHistoryItem);
+        saveHistory();
+
+        showResult(
+          finalScore,
+          correctCount,
+          incorrectCount,
+          unansweredCount,
+          false,
+          currentStudent.name,
+          "showStudentFolderSelection" // Nút quay lại sẽ về màn hình chọn thư mục
+        );
+      }
+
+      function showResult(
+        score,
+        correct,
+        incorrect,
+        unanswered,
+        isReviewMode,
+        name,
+        returnFunction
+      ) {
+        currentView = isReviewMode ? "review" : "result";
+
+        const totalQuestions = currentExam.questions.length;
+
+        const reviewHtml = currentExam.questions
+          .map((q) => {
+            const studentAns = studentAnswers[q.id] || [];
+            const correctAns = q.correctAnswer || [];
+
+            let status, statusClass;
+
+            if (correctAns.length === 0) {
+              status = "⚠️ GV chưa cung cấp đáp án";
+              statusClass = "review-unanswered";
+            } else if (studentAns.length === 0) {
+              status = "❓ Chưa trả lời";
+              statusClass = "review-unanswered";
+            } else {
+              const isCorrect =
+                correctAns.length === studentAns.length &&
+                correctAns.every((ans) => studentAns.includes(ans));
+              if (isCorrect) {
+                status = "✅ Đúng";
+                statusClass = "review-correct";
+              } else {
+                status = "❌ Sai";
+                statusClass = "review-incorrect";
+              }
+            }
+
+            const studentAnsStr =
+              studentAns.length > 0 ? studentAns.join(", ") : "Chưa trả lời";
+            const correctAnsStr =
+              correctAns.length > 0 ? correctAns.join(", ") : "Không xác định";
+
+            return `
+                  <div class="review-item ${statusClass}">
+                      <div class="question-header" style="background: none; color: #333; padding: 0;"><strong>Câu ${
+                        q.id
+                      }: ${status}</strong></div>
+                      <img src="${q.image}" alt="Câu ${
+              q.id
+            }" class="question-image" style="max-height: 250px; margin: 10px 0; border: 1px solid #ddd;">
+                      <div class="review-info">
+                          <p><strong>Đáp án của bạn:</strong> <span style="font-weight: bold; color: ${
+                            statusClass.includes("correct")
+                              ? "#28a745"
+                              : statusClass.includes("incorrect")
+                              ? "#dc3545"
+                              : "#ffc107"
+                          };">${studentAnsStr}</span></p>
+                          <p><strong>Đáp án đúng:</strong> <span style="font-weight: bold; color: #667eea;">${correctAnsStr}</span></p>
+                      </div>
+                  </div>
+              `;
+          })
+          .join("");
+
+        let backButton;
+        if (returnFunction === "showHistory") {
+          backButton = `<button class="btn" onclick="showHistory()">Về Lịch Sử Thi</button>`;
+        } else if (returnFunction === "showAllHistoryAdmin") {
+          backButton = `<button class="btn" onclick="showAllHistoryAdmin()">Về Lịch Sử Thi Admin</button>`;
+        } else {
+          backButton = `<button class="btn" onclick="showHomePage()">Về Trang Chủ</button>`;
+        }
+
+        const app = document.getElementById("app");
+        app.innerHTML = `
+                <div class="container">
+                    <div class="header">
+                        <h1>${
+                          isReviewMode ? "📖 Xem Lại Bài Làm" : "⭐ Kết Quả Thi"
+                        }</h1>
+                    </div>
+                    <div class="login-container">
+                        <div class="login-box result-box">
+                            <h2 style="color: #667eea; margin-bottom: 10px;">${
+                              isReviewMode
+                                ? "Chi Tiết Bài Làm"
+                                : "🎉 Chúc mừng " + name + "!"
+                            }</h2>
+                            <div style="font-size: 1.5em; color: #555;">Đề thi: <strong>${
+                              currentExam.title
+                            }</strong></div>
+                            
+                            <div class="result-score">
+                                ${score} / 10
+                            </div>
+                            
+                            <div style="margin-bottom: 30px;">
+                                <div style="color: #28a745;">✅ Số câu đúng: <strong>${correct}</strong></div>
+                                <div style="color: #dc3545;">❌ Số câu sai: <strong>${incorrect}</strong></div>
+                                <div style="color: #ffc107;">❓ Số câu chưa làm/chưa chấm: <strong>${unanswered}</strong></div>
+                                <div style="color: #666;">📝 Tổng câu hỏi: <strong>${totalQuestions}</strong></div>
+                            </div>
+                            
+                            ${backButton}
+                            ${
+                              !isReviewMode
+                                ? `<button class="btn btn-secondary" style="margin-top: 10px;" onclick="showReview(null, true)">Xem Chi Tiết Bài Làm</button>`
+                                : ""
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard">
+                        <h2 style="margin-bottom: 20px;">Phân Tích Chi Tiết Từng Câu</h2>
+                        <div class="result-details">
+                            ${reviewHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      init();
+    </script>
+  </body>
+</html>
